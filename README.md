@@ -1,5 +1,7 @@
 # Private Feed Snapshot
 
+[Live app](https://dcftradingcrypt.github.io/private-feed-snapshot/) · [Verification record](VERIFICATION.md)
+
 A small browser tool that captures a public RSS 2.0 or Atom 1.0 feed through the Nym mixnet. Save the received XML and a SHA-256 receipt, then verify the saved bytes locally. Feed summaries are rendered as plain text; articles, images and enclosures are never loaded.
 
 The purpose is reproducible feed research without making each feed request directly from the reader to the publisher. The result is a portable snapshot, rather than a cloud reading history.

@@ -37,4 +37,19 @@ At `https://dcftradingcrypt.github.io/private-feed-snapshot/`, the normal Connec
 
 A later browser-harness file-selection operation lost its temporary files and returned NotFound. End-to-end verification through the file chooser is therefore **not claimed passed** in this environment. The file verifier's core hash / size / malformed-input / mutation cases passed unit tests.
 
-The subsequent revision adds text display and a local paste-verification path so readers can check a snapshot without a file transfer. Its deployed positive and changed-text browser checks are pending and will be recorded after execution.
+## Deployed text-verification run
+
+Revision `3f3e5863f97a07aa6e67b92f9b879b519909a188`, tree `2cd1c16af571eac911fb435fb1a339f20cefbfe5`: all 17 public files again matched local bytes. [Workflow 39052150902](https://github.com/dcftradingcrypt/private-feed-snapshot/actions/runs/39052150902) passed all verification and deployment steps. An independent local UI reproduction also checked eight paste / mutation / asynchronous-result cases.
+
+The deployed app was reloaded and its normal controls were operated again:
+
+1. Connect to Nym, choose the fictional demo, Capture feed: HTTP 200; 1,039 bytes; the same digest and two Atom entries. New receipt timestamp: `2026-10-17T17:06:31.882Z`.
+2. Open **View captured text for manual copy** and read the actual captured XML and receipt from their visible read-only fields.
+3. Disconnect. The UI confirmed closure and disabled capture.
+4. Paste that actual captured XML and receipt into the local verification form and press **Check pasted text**: **MATCH — 1,039 bytes**.
+5. Change `128 MiB` to `129 MiB` in the pasted XML and check again: **MISMATCH**.
+6. Restore the actual XML and check again: **MATCH**. Both text panels were collapsed with the result retained.
+
+This verifies the real Nym capture -> inspect captured text -> disconnect -> local UTF-8 integrity check and mutation-detection flow. It does not replace the explicitly uncompleted file-chooser test above. The record and screenshots are observational evidence, not a cryptographic attestation of routing or publisher authenticity.
+
+The final documentation update adds these results and a prepared forum submission; it does not change the tested application code.
