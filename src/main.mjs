@@ -57,6 +57,8 @@ function showSnapshot(bytes, receipt, feed) {
   $('capture-size').textContent = `${bytes.byteLength.toLocaleString()} bytes`;
   $('capture-hash').textContent = receipt.sha256;
   $('capture-time').textContent = receipt.receivedAt;
+  $('captured-xml').value = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
+  $('captured-receipt').value = JSON.stringify(receipt, null, 2);
   $('entries').replaceChildren();
   for (const entry of feed.entries.slice(0, 8)) {
     const li = document.createElement('li');
@@ -119,29 +121,45 @@ function download(content, type, name) {
 $('download-xml').addEventListener('click', () => { if (snapshot) download(snapshot.bytes, 'application/xml', 'feed-snapshot.xml'); });
 $('download-receipt').addEventListener('click', () => { if (snapshot) download(`${JSON.stringify(snapshot.receipt, null, 2)}\n`, 'application/json', 'feed-snapshot.receipt.json'); });
 
-for (const id of ['xml-file', 'receipt-file']) {
-  $(id).addEventListener('change', () => {
+for (const id of ['xml-file', 'receipt-file', 'pasted-xml', 'pasted-receipt']) {
+  $(id).addEventListener(id.startsWith('pasted-') ? 'input' : 'change', () => {
     verificationGeneration += 1;
-    status('verify-status', 'Selection changed. Check these files to see their integrity result.');
+    status('verify-status', 'Selection changed. Check these files or pasted text to see their integrity result.');
   });
 }
 
-$('verify-form').addEventListener('submit', async (event) => {
-  event.preventDefault();
+async function checkInputs(readInputs) {
   const generation = ++verificationGeneration;
   try {
+    const { bytes, receipt } = await readInputs();
+    const result = await verifyReceipt(bytes, receipt);
+    if (generation !== verificationGeneration) return;
+    status('verify-status', result.ok ? `MATCH — ${result.actualBytes.toLocaleString()} bytes. The supplied bytes match this receipt. This does not authenticate the receipt or publisher.` : 'MISMATCH — the XML does not match this receipt. The bytes or receipt may have changed.', result.ok ? 'success' : 'error');
+  } catch (error) {
+    if (generation !== verificationGeneration) return;
+    status('verify-status', `Verification failed: ${error.message || String(error)}`, 'error');
+  }
+}
+
+$('verify-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  void checkInputs(async () => {
     const xml = $('xml-file').files[0];
     const record = $('receipt-file').files[0];
     if (!xml || !record) throw new Error('Select both an XML file and a receipt.');
     if (xml.size > MAX_BYTES) throw new Error('The XML file exceeds 1 MiB.');
     if (record.size > 32_768) throw new Error('The receipt exceeds 32 KiB.');
-    const bytes = new Uint8Array(await xml.arrayBuffer());
-    const receipt = JSON.parse(await record.text());
-    const result = await verifyReceipt(bytes, receipt);
-    if (generation !== verificationGeneration) return;
-    status('verify-status', result.ok ? `MATCH — ${result.actualBytes.toLocaleString()} bytes. The saved bytes match this receipt. This does not authenticate the receipt or publisher.` : 'MISMATCH — the XML does not match this receipt. The bytes or receipt may have changed.', result.ok ? 'success' : 'error');
-  } catch (error) {
-    if (generation !== verificationGeneration) return;
-    status('verify-status', `Verification failed: ${error.message || String(error)}`, 'error');
-  }
+    return { bytes: new Uint8Array(await xml.arrayBuffer()), receipt: JSON.parse(await record.text()) };
+  });
+});
+
+$('verify-text-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  void checkInputs(() => {
+    const bytes = new TextEncoder().encode($('pasted-xml').value);
+    const record = $('pasted-receipt').value;
+    if (bytes.byteLength > MAX_BYTES) throw new Error('The pasted XML exceeds 1 MiB as UTF-8.');
+    if (new TextEncoder().encode(record).byteLength > 32_768) throw new Error('The pasted receipt exceeds 32 KiB.');
+    return { bytes, receipt: JSON.parse(record) };
+  });
 });

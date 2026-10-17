@@ -21,4 +21,20 @@ Local implementation checks:
 - Production static build succeeded with Vite 7.3.7 and esbuild 0.28.2. The large lazy-loaded Nym dependency is expected; it is not loaded until Connect.
 - Independent in-memory UI reproductions confirmed that pending Disconnect blocks capture, timeout blocks another capture and suppresses late results, an old verification cannot overwrite a newer result, and changing either selected file invalidates pending verification.
 
-The deployed app's real capture / download / offline-verify flow is still pending. No completed app deployment or end-to-end app capture is claimed yet. This record will be extended with concrete results before a completed-project mission submission.
+## Deployed application run
+
+Source commit `9039b26efc8fc7c4326364a6cbf0f45e523c4538`, tree `00b16fd88d425e74cacf5c76d1cd8384732c1dad`: all 17 public source files were independently compared with local bytes. GitHub Actions [39041292518](https://github.com/dcftradingcrypt/private-feed-snapshot/actions/runs/39041292518) passed install, all 29 tests, the full dependency audit, build and Pages deployment.
+
+At `https://dcftradingcrypt.github.io/private-feed-snapshot/`, the normal Connect / fictional demo / Capture feed controls were operated:
+
+- Actual Nym connection reported ready, then the owned demo feed returned HTTP 200.
+- Capture time: `2026-10-17T14:36:23.490Z` (local receipt timestamp).
+- Returned XML: 1,039 bytes, Atom, two entries.
+- SHA-256: `e68fd46157dadf8c794a41aadab398b8fc08511171327303616b6ab057b98d53`.
+- The rendered second summary retained literal `<p>` markup as text.
+- Save XML and Save receipt each produced a real download. Both were read independently: the XML exactly matched the owned fixture, the receipt recorded HTTP 200 / application/atom+xml, and its length and digest matched those bytes.
+- Disconnect completed and disabled another capture.
+
+A later browser-harness file-selection operation lost its temporary files and returned NotFound. End-to-end verification through the file chooser is therefore **not claimed passed** in this environment. The file verifier's core hash / size / malformed-input / mutation cases passed unit tests.
+
+The subsequent revision adds text display and a local paste-verification path so readers can check a snapshot without a file transfer. Its deployed positive and changed-text browser checks are pending and will be recorded after execution.
