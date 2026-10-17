@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="https://research.example.org/">
+  <title>Research methods — demonstration feed</title>
+  <id>urn:example:research-methods</id>
+  <updated>2026-10-17T10:00:00Z</updated>
+  <entry>
+    <id>urn:example:method-a</id>
+    <title>Method A uses less memory</title>
+    <link href="notes/method-a" rel="alternate"/>
+    <published>2026-10-16T10:00:00Z</published>
+    <updated>2026-10-17T09:00:00Z</updated>
+    <author><name>Example Research Team</name></author>
+    <summary>In the fictional benchmark, method A used 144 MiB and completed in 12 seconds.</summary>
+    <category term="benchmark"/>
+  </entry>
+  <entry>
+    <id>urn:example:method-b</id>
+    <title>Method B is faster</title>
+    <link href="notes/method-b"/>
+    <updated>2026-10-17T10:00:00Z</updated>
+    <summary type="html">&lt;p&gt;In the fictional benchmark, method B used 256 MiB and completed in 8 seconds.&lt;/p&gt;</summary>
+    <category term="benchmark"/>
+  </entry>
+</feed>

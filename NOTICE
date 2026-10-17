@@ -1,0 +1,10 @@
+Private Feed Snapshot
+Copyright 2026 dcftradingcrypt
+
+src/feed.mjs and the fictional public demo feeds derive from Feed Research Memory,
+https://github.com/dcftradingcrypt/feed-research-memory
+commit 91c24feea6752d544d877831176addc54f69944b, Apache-2.0.
+The browser Nym transport, capture receipt, offline verification and UI are new work.
+
+Nym browser transport uses @nymproject/mix-fetch 3.0.0 and its dependencies.
+This community project is not an official Nym product.

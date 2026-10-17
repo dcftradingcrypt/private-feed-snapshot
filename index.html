@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Capture a public RSS or Atom feed through the Nym mixnet. Save the XML and a SHA-256 receipt, then check those bytes offline." />
+    <title>Private Feed Snapshot</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead"><a href="#" class="wordmark">PFS <span>/ Private Feed Snapshot</span></a><span class="version">COMMUNITY TOOL · v0.1.0</span></header>
+      <main>
+        <section class="intro"><p class="eyebrow">PUBLIC FEEDS. A PRIVATE REQUEST PATH.</p><h1>A snapshot you can<br /><em>take with you.</em></h1><p class="lede">Fetch an RSS or Atom feed through Nym. Keep the received XML and a small integrity receipt. Check the saved bytes later, without another request.</p></section>
+        <div class="workspace">
+          <section class="card capture" aria-labelledby="capture-title">
+            <div class="card-heading"><span class="step">01</span><h2 id="capture-title">Capture through Nym</h2></div>
+            <p class="hint">Public HTTPS feeds only. No account, wallet or payment required by this app. Free gateway availability can vary.</p>
+            <div class="connection"><div><span id="connection-dot" class="dot"></span><strong id="connection-state">Not connected</strong></div><button id="connect" type="button">Connect to Nym</button></div>
+            <p id="connection-detail" class="small" role="status" aria-live="polite">Connect when you are ready. Setup contacts Nym network services and an entry gateway.</p>
+            <form id="capture-form"><label for="feed-url">Feed URL</label><input id="feed-url" name="feed-url" type="url" placeholder="https://publisher.example/feed.xml" required autocomplete="off" spellcheck="false" maxlength="4096" /><div class="form-actions"><button id="capture" type="submit" disabled>Capture feed <span aria-hidden="true">↗</span></button><button id="use-demo" type="button" class="text-button">Use the fictional demo feed</button></div></form>
+            <p id="capture-status" class="status" role="status" aria-live="polite">Accepts feeds up to 1 MiB. Stops waiting after 60 seconds.</p>
+            <div id="snapshot-result" hidden>
+              <div class="result-heading"><span class="pill">CAPTURED</span><span id="capture-size" class="small"></span></div><h3 id="feed-title"></h3><p id="feed-summary" class="small"></p><ol id="entries" class="entries"></ol>
+              <dl class="receipt"><dt>SHA-256 of received bytes</dt><dd id="capture-hash"></dd><dt>Local capture time</dt><dd id="capture-time"></dd></dl>
+              <div class="download-actions"><button id="download-xml" type="button">Save XML</button><button id="download-receipt" type="button" class="secondary">Save receipt</button></div>
+              <p class="small">Keep both files together. The receipt includes this URL and timestamp; share it only when you intend to reveal them.</p>
+            </div>
+            <button id="disconnect" type="button" class="text-button disconnect" disabled>Disconnect</button>
+          </section>
+          <aside>
+            <section class="card verify" aria-labelledby="verify-title"><div class="card-heading"><span class="step">02</span><h2 id="verify-title">Verify saved bytes</h2></div><p class="hint">Select a saved XML file and its receipt. This check runs locally and makes no network request.</p><form id="verify-form"><label for="xml-file">Saved XML</label><input id="xml-file" type="file" accept=".xml,.atom,.rss,text/xml,application/xml,application/atom+xml,application/rss+xml" required /><label for="receipt-file">Receipt JSON</label><input id="receipt-file" type="file" accept=".json,application/json" required /><button type="submit" class="secondary">Check integrity</button></form><p id="verify-status" class="status" role="status" aria-live="polite">No files selected.</p></section>
+            <section class="notes" aria-labelledby="limits-title"><h2 id="limits-title">What the record tells you</h2><p>A matching hash confirms the saved bytes match the receipt. It does not prove who published the feed, when it existed, or how it travelled.</p><p>Nym carries the capture request. Initial setup is visible to network services, and the exit can see the destination. HTTPS validation remains enabled. This tool does not promise complete anonymity.</p><p>Choose a small feed: the Nym client buffers each response before this app checks its size. Redirects are disabled; use the final feed URL. The app does not fetch article pages, images or feed enclosures. It has no analytics or application server. Nym stores encrypted communication state in browser storage; this app uses a new namespace and in-memory passphrase on each page load. Clear site data to remove that state. Feed files stay in page memory until you save or share them.</p></section>
+          </aside>
+        </div>
+      </main>
+      <footer><span>Built with Nym mix-fetch · Apache-2.0</span><span>Independent community project. No Nym endorsement implied.</span></footer>
+    </div>
+    <script type="module" src="/src/main.mjs"></script>
+  </body>
+</html>

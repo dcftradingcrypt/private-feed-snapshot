@@ -1,0 +1,25 @@
+{
+  "name": "private-feed-snapshot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Capture a public RSS or Atom feed through Nym and verify saved bytes offline.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "dcftradingcrypt",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build --base=./",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@nymproject/mix-fetch": "3.0.0",
+    "saxes": "6.0.0"
+  },
+  "devDependencies": {
+    "vite": "7.3.7"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
